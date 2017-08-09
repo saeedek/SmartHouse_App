@@ -52,21 +52,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 mBluetooth.scanDevices();
             }
         });
-        if(Utils.readSharedSetting(this,"pairedDevice","false")!="false"){
-            Intent i = new Intent(MainActivity.this, InfoActivity.class);
-            startActivity(i);
-            finish();
-        }
         int MY_PERMISSIONS_REQUEST_ACCESS_COARSE_LOCATION = 1;
         ActivityCompat.requestPermissions(this,
                 new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
                 MY_PERMISSIONS_REQUEST_ACCESS_COARSE_LOCATION);
     }
-
-    private void getDevices() {
-
-    }
-
 
     @Override
     protected void onDestroy() {
@@ -77,6 +67,15 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+        for(BluetoothDevice d:mBluetooth.getPairedDevices()){
+            if(devices.get(i).equals(d)){
+                Intent ii = new Intent(MainActivity.this, InfoActivity.class);
+                MyApp.myDevice=devices.get(i);
+                startActivity(ii);
+                finish();
+            }
+        }
+
         mBluetooth.pair(devices.get(i));
     }
 
@@ -108,7 +107,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     @Override
     public void onPair(BluetoothDevice device) {
         Intent i = new Intent(MainActivity.this, InfoActivity.class);
-        Utils.saveSharedSetting(this,"pairedDevice","true");
+        MyApp.myDevice=device;
         startActivity(i);
         finish();
     }
