@@ -73,9 +73,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 MyApp.myDevice=devices.get(i);
                 startActivity(ii);
                 finish();
+                return;
             }
         }
-
         mBluetooth.pair(devices.get(i));
     }
 
@@ -118,7 +118,13 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     @Override
-    public void onError(String message) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+    public void onError(final String message) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(MainActivity.this, message, Toast.LENGTH_SHORT).show();
+            }
+        });
+
     }
 }
